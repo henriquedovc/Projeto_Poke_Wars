@@ -1,0 +1,18 @@
+# Ambiente virtual
+venv/
+
+# Variáveis de ambiente (senhas, chaves)
+.env
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Banco SQLite (caso apareça por engano; vamos usar PostgreSQL)
+db.sqlite3
+
+# Arquivos do editor
+.vscode/
+
+# Cache de dados da API, se você recriar esse cache no Django
+data/
