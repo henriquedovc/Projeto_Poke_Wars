@@ -1,0 +1,39 @@
+<details class="capture-cleanup">
+  <summary>DELETAR CAPTURAS POR FILTRO</summary>
+  <form method="post" action="{% url 'delete_filtered_captures' %}" data-delete-captures>
+    {% csrf_token %}
+    <input type="hidden" name="return_to" value="{{ request.path }}">
+    {% if filtros.q %}<input type="hidden" name="q" value="{{ filtros.q }}">{% endif %}
+    {% if filtros.tipo %}<input type="hidden" name="tipo" value="{{ filtros.tipo }}">{% endif %}
+    {% if filtros.raridade %}<input type="hidden" name="raridade" value="{{ filtros.raridade }}">{% endif %}
+    {% if filtros.nivel_min %}<input type="hidden" name="nivel_min" value="{{ filtros.nivel_min }}">{% endif %}
+    {% if filtros.nivel_max %}<input type="hidden" name="nivel_max" value="{{ filtros.nivel_max }}">{% endif %}
+    <fieldset class="capture-cleanup__rarities">
+      <legend>RARIDADE DA ESPÉCIE</legend>
+      {% for value, label in limpeza.raridades %}
+      <label class="capture-cleanup__check"><input type="checkbox" name="raridade_especie" value="{{ value }}"{% if value in limpeza.raridades_selecionadas %} checked{% endif %}><span class="rarity rarity--{{ value }}">{{ label }}</span></label>
+      {% endfor %}
+    </fieldset>
+    <div class="capture-cleanup__fields">
+      <div class="collection-filters__field">
+        <label for="{{ cleanup_id }}-iv">IV GERAL ABAIXO DE</label>
+        <select id="{{ cleanup_id }}-iv" name="iv_geral_abaixo">
+          <option value="">Não filtrar por IV</option>
+          {% for value, label in limpeza.raridades %}<option value="{{ value }}"{% if limpeza.iv_geral_abaixo == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="collection-filters__field">
+        <label for="{{ cleanup_id }}-mode">COMBINAR CRITÉRIOS</label>
+        <select id="{{ cleanup_id }}-mode" name="modo_filtro">
+          <option value="qualquer"{% if limpeza.modo_filtro == 'qualquer' %} selected{% endif %}>Qualquer um</option>
+          <option value="todos"{% if limpeza.modo_filtro == 'todos' %} selected{% endif %}>Todos</option>
+        </select>
+      </div>
+    </div>
+    <p class="capture-cleanup__preview" role="status">
+      {% if limpeza.filtro_configurado %}{{ limpeza.quantidade_para_deletar }} captura(s) correspondem aos filtros.{% else %}Escolha ao menos um critério para ver a prévia.{% endif %}
+    </p>
+    <button class="pixel-btn pixel-btn--blue capture-cleanup__preview-button" type="submit" formmethod="get" formaction="{{ request.path }}">CALCULAR PRÉVIA</button>
+    <button class="pixel-btn pixel-btn--secondary capture-cleanup__submit" type="submit"{% if not limpeza.filtro_configurado or not limpeza.quantidade_para_deletar %} disabled{% endif %}>DELETAR CAPTURAS</button>
+  </form>
+</details>

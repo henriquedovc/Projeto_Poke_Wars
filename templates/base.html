@@ -2,25 +2,81 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block titulo %}Pokemon Battle{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#203149">
+  <title>{% block titulo %}Pokemon Battle{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/collection-filters.css' %}">
+  <link rel="stylesheet" href="{% static 'css/capture-effects.css' %}?v=rarity-grid-3">
+  <link rel="stylesheet" href="{% static 'css/pokemon-detail.css' %}">
+  <script>
+    try {
+      const introKey = 'pokemon-battle-intro-seen';
+      if (sessionStorage.getItem(introKey)) {
+        document.documentElement.classList.add('skip-preloader');
+      } else {
+        sessionStorage.setItem(introKey, '1');
+      }
+    } catch {}
+  </script>
+  <style>
+    .skip-preloader #preloader { display: none; }
+    #preloader { transition-duration: .1625s; }
+    #preloader.is-colliding .preloader__clash { animation-duration: .2125s; }
+    #preloader .preloader__beam, #preloader .preloader__meter-fill { transition-duration: .045s; }
+  </style>
+  {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <nav>
-        <a href="/">Início</a>
+  <audio id="background-audio" src="{% static 'audio/base_audio.mp3' %}" loop preload="auto"></audio>
+  <audio id="capture-audio" src="{% static 'audio/pokemon_captured.mp3' %}" preload="auto"></audio>
+  <div class="preloader" id="preloader" data-roar-src="{% static 'audio/charizards-roar-audiotrimmer.mp3' %}" role="status" aria-label="Carregando página">
+    <div class="preloader__grid" aria-hidden="true"></div>
+    <div class="preloader__label">PREPARANDO A BATALHA...</div>
+    <div class="preloader__arena" aria-hidden="true">
+      <img class="preloader__sprite preloader__sprite--fire" src="{% static 'img/charizard.gif' %}" alt="">
+      <div class="preloader__beam preloader__beam--fire"></div>
+      <div class="preloader__clash"></div>
+      <div class="preloader__beam preloader__beam--water"></div>
+      <img class="preloader__sprite preloader__sprite--water" src="{% static 'img/blastoise.gif' %}" alt="">
+    </div>
+    <div class="preloader__bottom"><span id="loading-status">0%</span><span class="preloader__meter" aria-hidden="true"><span class="preloader__meter-fill"></span></span></div>
+  </div>
+  <header class="site-header">
+    <nav class="nav-inner" aria-label="Navegação principal">
+      <a class="brand" href="{% url 'pokedex_list' %}"><span class="brand-mark" aria-hidden="true"></span>POKEMON<br>BATTLE</a>
+      <div class="nav-links">
+        <a href="{% url 'pokedex_list' %}">Pokédex</a>
         {% if user.is_authenticated %}
-            <span>Olá, {{ user.username }}</span>
-            <a href="{% url 'logout' %}">Sair</a>
-        {% else %}
-            <a href="{% url 'login' %}">Entrar</a>
-            <a href="{% url 'register' %}">Criar conta</a>
+          <a href="{% url 'gacha' %}">Capturar</a>
+          <a href="{% url 'my_pokemons' %}">Meu time</a>
         {% endif %}
+      </div>
+      <div class="nav-actions">
+        {% if user.is_authenticated %}
+          <span class="nav-user">Olá, {{ user.username }}</span>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="pixel-btn pixel-btn--secondary" type="submit">Sair</button>
+          </form>
+        {% else %}
+          <a class="pixel-btn pixel-btn--secondary" href="{% url 'login' %}">Entrar</a>
+          <a class="pixel-btn" href="{% url 'register' %}">Criar conta</a>
+        {% endif %}
+        <button id="sound-toggle" class="sound-toggle" type="button" aria-label="Ativar música e efeitos sonoros" aria-pressed="false" title="Ativar som">♪̸</button>
+      </div>
     </nav>
-
-    <main>
-        {% block conteudo %}
-        {% endblock %}
-    </main>
+  </header>
+  <main class="site-main">
+    {% if messages %}<ul class="message-list" role="status">{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>{% endif %}
+    {% block conteudo %}{% endblock %}
+  </main>
+  <footer class="site-footer">POKEMON BATTLE <span>✦</span> SUA JORNADA COMEÇA AQUI</footer>
+  <script defer src="{% static 'js/site.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>

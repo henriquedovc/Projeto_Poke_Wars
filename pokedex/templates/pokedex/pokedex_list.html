@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block titulo %}Pokédex • Pokemon Battle{% endblock %}
+{% block conteudo %}
+<section class="page-heading">
+  <div><span class="eyebrow">EXPLORE O MUNDO</span><h1 class="page-title">Pokédex</h1><p class="page-subtitle">Cada encontro é o começo de uma nova história.</p></div>
+  <span class="count-chip">{{ total_pokemons }} ESPÉCIES</span>
+</section>
+<form class="collection-filters" method="get" action="{% url 'pokedex_list' %}" role="search">
+  <div class="collection-filters__field collection-filters__search">
+    <label for="pokedex-search">NOME OU NÚMERO</label>
+    <input id="pokedex-search" type="search" name="q" value="{{ filtros.q }}" placeholder="Ex.: Pikachu ou 25">
+  </div>
+  <div class="collection-filters__field">
+    <label for="pokedex-type">TIPO</label>
+    <select id="pokedex-type" name="tipo">
+      <option value="">Todos os tipos</option>
+      {% for tipo in tipos %}<option value="{{ tipo }}"{% if filtros.tipo == tipo %} selected{% endif %}>{{ tipo|title }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="collection-filters__field">
+    <label for="pokedex-rarity">RARIDADE</label>
+    <select id="pokedex-rarity" name="raridade">
+      <option value="">Todas</option>
+      {% for valor, rotulo in raridades %}<option value="{{ valor }}"{% if filtros.raridade == valor %} selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+    </select>
+  </div>
+  <button class="pixel-btn pixel-btn--blue" type="submit">FILTRAR</button>
+  {% if filtros.q or filtros.tipo or filtros.raridade %}<a class="filter-clear" href="{% url 'pokedex_list' %}">LIMPAR</a>{% endif %}
+</form>
+<p class="filter-summary" role="status">{{ pokemons|length }} de {{ total_pokemons }} espécies</p>
+<div class="collection-grid">
+  {% for pokemon in pokemons %}
+  <article class="poke-card poke-card--{{ pokemon.raridade|default:'comum'|slugify }}">
+    <div class="poke-card__visual">{% if pokemon.sprite_url %}<img src="{{ pokemon.sprite_url }}" alt="Sprite de {{ pokemon.nome }}" loading="lazy">{% else %}<span aria-hidden="true">◉</span>{% endif %}</div>
+    <div class="poke-card__body"><span class="poke-card__number">#{{ pokemon.pokeapi_id|stringformat:'03d' }}</span><h2 class="poke-card__name">{{ pokemon.nome }}</h2><div class="poke-card__meta"><span class="rarity rarity--{{ pokemon.raridade|default:'comum'|slugify }}">{{ pokemon.raridade|default:'Comum' }}</span></div></div>
+  </article>
+  {% empty %}
+  <div class="pixel-panel empty-state"><div class="empty-state__icon">◉</div><h2>Nenhuma espécie encontrada</h2><p>Volte depois para descobrir novos Pokémon.</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

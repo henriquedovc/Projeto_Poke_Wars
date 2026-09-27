@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block titulo %}Meu time • Pokemon Battle{% endblock %}
+{% block conteudo %}
+<section class="page-heading"><div><span class="eyebrow">SUA COLEÇÃO</span><h1 class="page-title">Meus Pokémon</h1><p class="page-subtitle">Os companheiros que você encontrou pelo caminho.</p></div><span class="count-chip">{{ total_capturas }} CAPTURADOS</span></section>
+<form class="collection-filters collection-filters--team" method="get" action="{% url 'my_pokemons' %}" role="search">
+  <div class="collection-filters__field collection-filters__search">
+    <label for="team-search">NOME OU APELIDO</label>
+    <input id="team-search" type="search" name="q" value="{{ filtros.q }}" placeholder="Buscar no time">
+  </div>
+  <div class="collection-filters__field">
+    <label for="team-type">TIPO</label>
+    <select id="team-type" name="tipo">
+      <option value="">Todos os tipos</option>
+      {% for tipo in tipos %}<option value="{{ tipo }}"{% if filtros.tipo == tipo %} selected{% endif %}>{{ tipo|title }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="collection-filters__field">
+    <label for="team-rarity">RARIDADE</label>
+    <select id="team-rarity" name="raridade">
+      <option value="">Todas</option>
+      {% for valor, rotulo in raridades %}<option value="{{ valor }}"{% if filtros.raridade == valor %} selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="collection-filters__field collection-filters__level">
+    <label for="team-level-min">NÍVEL MÍN.</label>
+    <input id="team-level-min" type="number" name="nivel_min" min="1" value="{{ filtros.nivel_min }}" placeholder="1">
+  </div>
+  <div class="collection-filters__field collection-filters__level">
+    <label for="team-level-max">NÍVEL MÁX.</label>
+    <input id="team-level-max" type="number" name="nivel_max" min="1" value="{{ filtros.nivel_max }}" placeholder="100">
+  </div>
+  <button class="pixel-btn pixel-btn--blue" type="submit">FILTRAR</button>
+  {% if filtros.q or filtros.tipo or filtros.raridade or filtros.nivel_min or filtros.nivel_max %}<a class="filter-clear" href="{% url 'my_pokemons' %}">LIMPAR</a>{% endif %}
+</form>
+<p class="filter-summary" role="status">{{ meus_pokemons|length }} de {{ total_capturas }} capturados</p>
+{% include 'pokedex/_capture_cleanup.html' with cleanup_id='team-cleanup' %}
+<div class="collection-grid">
+  {% for captura in meus_pokemons %}
+  <article class="poke-card poke-card--{{ captura.especie.raridade|default:'comum'|slugify }}">
+    <div class="poke-card__visual">{% if captura.especie.sprite_url %}<img src="{{ captura.especie.sprite_url }}" alt="Sprite de {{ captura.especie.nome }}" loading="lazy">{% else %}<span aria-hidden="true">◉</span>{% endif %}</div>
+    <div class="poke-card__body"><span class="poke-card__number">{{ captura.especie.nome }}</span><h2 class="poke-card__name">{{ captura.apelido|default:captura.especie.nome }}</h2><div class="poke-card__meta"><span class="rarity rarity--{{ captura.especie.raridade|default:'comum'|slugify }}">{{ captura.especie.raridade|default:'Comum' }}</span><span>NV. {{ captura.nivel }}</span></div><div class="poke-card__iv-summary"><span>IV GERAL</span><strong>{{ captura.media_ivs }} / 31</strong><span class="iv-rarity iv-rarity--{{ captura.raridade_iv_geral }}">{{ captura.raridade_iv_geral_label }}</span></div><span class="poke-card__inspect">INSPECIONAR <span aria-hidden="true">→</span></span></div>
+    <a class="poke-card__inspect-link" href="{% url 'pokemon_detail' captura.pk %}" aria-label="Inspecionar {{ captura.apelido|default:captura.especie.nome }}"></a>
+  </article>
+  {% empty %}
+  <div class="pixel-panel empty-state">
+    <div class="empty-state__icon">◉</div>
+    {% if filtros.q or filtros.tipo or filtros.raridade or filtros.nivel_min or filtros.nivel_max %}
+      <h2>Nenhum Pokémon encontrado</h2><p>Tente ajustar os filtros do seu time.</p><a class="pixel-btn pixel-btn--blue" href="{% url 'my_pokemons' %}">LIMPAR FILTROS</a>
+    {% else %}
+      <h2>Seu time está vazio</h2><p>Seu primeiro companheiro está esperando por você.</p><a class="pixel-btn" href="{% url 'gacha' %}">CAPTURAR AGORA →</a>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

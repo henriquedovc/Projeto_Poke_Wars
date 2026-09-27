@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block titulo %}Capturar • Pokemon Battle{% endblock %}
+{% block conteudo %}
+<section class="page-heading"><div><span class="eyebrow">É HORA DO ENCONTRO</span><h1 class="page-title">Área de captura</h1><p class="page-subtitle">Quem vai aparecer desta vez?</p></div></section>
+<div class="gacha-layout">
+  <section class="pixel-panel capture-stage" data-capture-stage data-result="{% if pokemon_capturado %}true{% else %}false{% endif %}" data-rarity="{{ pokemon_capturado.especie.raridade|default:''|lower }}" data-cooldown-seconds="{{ capture_cooldown_seconds|default:0 }}" aria-label="Resultado da captura">
+    <div class="capture-burst" aria-hidden="true"></div>
+    <div class="capture-rarity-effect" data-rarity-effect aria-hidden="true"></div>
+    <div class="capture-preview" data-capture-preview aria-hidden="true"><img class="capture-preview__sprite" data-preview-sprite alt=""></div>
+    <div class="capture-orbit" aria-hidden="true"><div class="capture-ball"><div class="ball-top"></div><div class="ball-bottom"></div><div class="ball-center"></div></div></div>
+    {% if pokemon_capturado %}
+    <div class="capture-result" aria-live="polite">
+      {% if pokemon_capturado.especie.sprite_url %}<img src="{{ pokemon_capturado.especie.sprite_url }}" alt="Sprite de {{ pokemon_capturado.especie.nome }}">{% endif %}
+      <p class="eyebrow">UM NOVO COMPANHEIRO!</p><h2>{{ pokemon_capturado.especie.nome }}</h2>
+      <span class="rarity rarity--{{ pokemon_capturado.especie.raridade|default:'comum'|slugify }}">{{ pokemon_capturado.especie.raridade|default:'Comum' }}</span>
+    </div>
+    {% endif %}
+    <p class="capture-caption" data-capture-caption>{% if pokemon_capturado %}REVELANDO SUA CAPTURA...{% else %}PRONTO PARA CAPTURAR?{% endif %}</p>
+  </section>
+  <aside class="pixel-panel capture-info">
+    <span class="eyebrow">SUA PRÓXIMA AVENTURA</span><h2>Uma Pokébola.<br>Uma surpresa.</h2>
+    <p>Cada captura pode revelar um Pokémon diferente — dos comuns aos míticos.</p>
+    <form class="capture-form" method="post" action="{% url 'gacha' %}">
+      {% csrf_token %}
+      <button class="pixel-btn" type="submit" data-capture{% if capture_cooldown_seconds %} disabled{% endif %}>◉ &nbsp; CAPTURAR</button>
+    </form>
+    <button class="pixel-btn pixel-btn--blue auto-capture-toggle" type="button" data-auto-capture aria-pressed="false">INICIAR AUTO CAPTURA</button>
+    <p class="auto-capture-status" data-auto-capture-status role="status">Auto captura desligado</p>
+    <div class="rarity-list" aria-label="Raridades possíveis">
+      <div class="rarity-row"><span class="rarity rarity--comum">COMUM</span></div>
+      <div class="rarity-row"><span class="rarity rarity--incomum">INCOMUM</span></div>
+      <div class="rarity-row"><span class="rarity rarity--raro">RARO</span></div>
+      <div class="rarity-row"><span class="rarity rarity--epico">ÉPICO</span></div>
+      <div class="rarity-row"><span class="rarity rarity--lendario">LENDÁRIO</span></div>
+      <div class="rarity-row"><span class="rarity rarity--mitico">MÍTICO</span></div>
+    </div>
+    <div class="capture-message" role="status">{% if erro_captura %}{{ erro_captura }}{% endif %}</div>
+  </aside>
+</div>
+{% include 'pokedex/_capture_cleanup.html' with cleanup_id='capture-cleanup' %}
+{% if pokemon_capturado %}{{ pokemon_revelacao|json_script:"capture-candidates" }}{% endif %}
+{% endblock %}

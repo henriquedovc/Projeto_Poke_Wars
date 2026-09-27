@@ -1,0 +1,409 @@
+.pokemon-detail__back {
+  margin-bottom: 24px;
+}
+
+.pokemon-detail__level-stack {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.pokemon-detail__overall-iv {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 4px 10px;
+  min-width: 132px;
+  padding: 7px 9px;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  text-align: right;
+}
+
+.pokemon-detail__overall-iv > span:first-child {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+}
+
+.pokemon-detail__overall-iv strong {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.pokemon-detail__overall-iv > span:last-child {
+  grid-column: 1 / -1;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.pokemon-detail__overall-iv.iv-rarity--mitico {
+  background: linear-gradient(110deg, #ff6b6b, #ffd166, #83e377, #61dafb, #b47aff, #ff6b6b);
+  background-size: 250% 100%;
+  animation: mythical-spectrum 2.6s linear infinite;
+}
+
+.pokemon-detail__heading {
+  margin-bottom: 28px;
+}
+
+.pokemon-detail__layout {
+  display: grid;
+  grid-template-columns: minmax(250px, .72fr) minmax(0, 1.28fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.pokemon-detail__identity {
+  overflow: hidden;
+}
+
+.pokemon-detail__sprite {
+  min-height: 280px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid var(--ink);
+  background:
+    radial-gradient(circle at center, var(--surface) 0 22%, transparent 22.5%),
+    repeating-linear-gradient(0deg, var(--paper-deep) 0 12px, #dce4c8 12px 24px);
+}
+
+.pokemon-detail__sprite::after {
+  content: '';
+  position: absolute;
+  bottom: 39px;
+  width: 145px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgb(32 49 73 / 15%);
+}
+
+.pokemon-detail__sprite img {
+  width: 190px;
+  height: 190px;
+  position: relative;
+  z-index: 1;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(5px 7px 0 rgb(32 49 73 / 15%));
+}
+
+.pokemon-detail__identity-body {
+  padding: 22px 24px 24px;
+}
+
+.pokemon-detail__identity-body h2,
+.pokemon-detail__stats-heading h2 {
+  margin: 7px 0 15px;
+  font-family: var(--font-pixel);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.pokemon-detail__tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pokemon-detail__type {
+  padding: 3px 9px;
+  border: 2px solid var(--ink);
+  background: var(--blue);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  line-height: 1.7;
+}
+
+.pokemon-detail__facts {
+  display: grid;
+  gap: 0;
+  margin: 20px 0 0;
+  border-top: 2px dashed var(--paper-deep);
+}
+
+.pokemon-detail__facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--paper-deep);
+}
+
+.pokemon-detail__facts dt {
+  color: var(--ink-soft);
+}
+
+.pokemon-detail__facts dd {
+  margin: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.pokemon-detail__stats {
+  padding: 23px 25px 18px;
+}
+
+.pokemon-detail__stats-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pokemon-detail__stats-heading h2 {
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.pokemon-detail__level {
+  padding: 8px 10px;
+  border: 2px solid var(--ink);
+  background: var(--yellow);
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.pokemon-detail__legend,
+.pokemon-stat__values {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  text-align: right;
+}
+
+.pokemon-detail__legend {
+  margin: 14px 0 0;
+  padding: 8px 0;
+  border-bottom: 3px solid var(--ink);
+  color: var(--ink-soft);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+}
+
+.pokemon-stat {
+  padding: 12px 0 10px;
+  border-bottom: 2px solid var(--paper-deep);
+}
+
+.pokemon-stat__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.pokemon-stat__heading h3 {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.pokemon-stat__heading strong {
+  color: var(--red-deep);
+  font-family: var(--font-pixel);
+  font-size: 15px;
+}
+
+.pokemon-stat__bar {
+  height: 8px;
+  margin: 7px 0 5px;
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  background: var(--paper-deep);
+}
+
+.pokemon-stat__bar span {
+  display: block;
+  width: var(--stat-progress);
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--green), var(--yellow));
+}
+
+.pokemon-stat__values {
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1.1;
+}
+
+.pokemon-stat__iv {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  width: max-content;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.pokemon-stat__iv strong {
+  color: var(--green);
+}
+
+.iv-rarity {
+  display: inline-block;
+  padding: 2px 5px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.iv-rarity--comum { background: #d9e3d0; }
+.iv-rarity--incomum { background: #b9dec7; }
+.iv-rarity--raro { background: #a7dcef; }
+.iv-rarity--epico { background: #d9c4eb; }
+.iv-rarity--lendario { background: #ffe098; }
+.iv-rarity--mitico {
+  background: linear-gradient(110deg, #ff6b6b, #ffd166, #83e377, #61dafb, #b47aff, #ff6b6b);
+  background-size: 250% 100%;
+  animation: mythical-spectrum 2.6s linear infinite;
+}
+
+.pokemon-stat__note,
+.pokemon-detail__note {
+  margin: 14px 0 0;
+  color: var(--ink-soft);
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.poke-card__body {
+  position: relative;
+  padding-bottom: 82px;
+}
+
+.poke-card__iv-summary {
+  position: absolute;
+  right: 14px;
+  bottom: 38px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.poke-card__iv-summary > span:first-child {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+}
+
+.poke-card__iv-summary strong {
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+}
+
+.poke-card__inspect {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px dashed var(--paper-deep);
+  padding-top: 9px;
+  color: var(--red-deep);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+}
+
+.poke-card__inspect-link {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+}
+
+.poke-card:has(.poke-card__inspect-link) {
+  cursor: pointer;
+}
+
+.poke-card:has(.poke-card__inspect-link):focus-within,
+.poke-card:has(.poke-card__inspect-link):hover {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+.poke-card--mitico {
+  animation: mythical-border-spectrum 5s linear infinite;
+}
+
+.poke-card--mitico .poke-card__visual {
+  background: linear-gradient(135deg, #ff4c86, #ffbf45, #75dd75, #48cbe0, #7d75ff, #df55df, #ff4c86);
+  background-size: 300% 300%;
+  animation: mythical-background-spectrum 5s ease infinite;
+}
+
+.rarity--mitico {
+  background: linear-gradient(110deg, #ff6b6b, #ffd166, #83e377, #61dafb, #b47aff, #ff6b6b);
+  background-size: 250% 100%;
+  animation: mythical-spectrum 2.6s linear infinite;
+}
+
+@keyframes mythical-spectrum {
+  to { background-position: 250% 50%; }
+}
+
+@keyframes mythical-background-spectrum {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes mythical-border-spectrum {
+  0%, 100% { border-color: #ff4c4c; }
+  16% { border-color: #ff9f43; }
+  33% { border-color: #ffe14a; }
+  50% { border-color: #55d66b; }
+  66% { border-color: #48b6ff; }
+  83% { border-color: #9e67ff; }
+}
+
+@media (max-width: 760px) {
+  .pokemon-detail__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .pokemon-detail__sprite {
+    min-height: 230px;
+  }
+}
+
+@media (max-width: 420px) {
+  .pokemon-detail__stats {
+    padding: 18px 14px 15px;
+  }
+
+  .pokemon-detail__identity-body {
+    padding: 18px 16px 20px;
+  }
+
+  .pokemon-stat__heading h3 {
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iv-rarity--mitico,
+  .pokemon-detail__overall-iv.iv-rarity--mitico,
+  .poke-card--mitico,
+  .poke-card--mitico .poke-card__visual,
+  .rarity--mitico {
+    animation: none;
+  }
+}
