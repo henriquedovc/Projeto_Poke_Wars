@@ -1,0 +1,21 @@
+body {
+    font-family: sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f4f4f4;
+}
+
+nav {
+    display: flex;
+    gap: 16px;
+    padding: 12px;
+    background: #2c3e50;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+nav a, nav span {
+    color: white;
+    text-decoration: none;
+}
