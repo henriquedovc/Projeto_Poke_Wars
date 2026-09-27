@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
-
-{% block titulo %}Entrar{% endblock %}
-
+{% block titulo %}Entrar • Pokemon Battle{% endblock %}
 {% block conteudo %}
-<h1>Entrar</h1>
-<form method="post">
+<section class="auth-wrap"><div class="pixel-panel auth-panel">
+  <div class="auth-icon" aria-hidden="true">◉</div>
+  <span class="eyebrow">BEM-VINDO DE VOLTA</span>
+  <h1 class="page-title">Sua aventura continua.</h1>
+  <p class="page-subtitle">Entre para encontrar seu próximo Pokémon.</p>
+  <form class="auth-form" method="post" action="{% url 'login' %}">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Entrar</button>
-</form>
+    {% if form.non_field_errors %}<div role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}<div class="field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}{% if field.help_text %}<span class="helptext">{{ field.help_text|safe }}</span>{% endif %}</div>{% endfor %}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    <button class="pixel-btn auth-submit" type="submit">ENTRAR →</button>
+  </form>
+  <p class="auth-switch">Novo treinador? <a href="{% url 'register' %}">Criar conta</a></p>
+</div></section>
 {% endblock %}

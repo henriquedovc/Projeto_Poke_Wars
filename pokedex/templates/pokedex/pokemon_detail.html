@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ nome_exibido }} • Meu time{% endblock %}
+{% block conteudo %}
+<a class="pixel-btn pixel-btn--secondary pokemon-detail__back" href="{% url 'my_pokemons' %}">← VOLTAR AO TIME</a>
+<section class="page-heading pokemon-detail__heading">
+  <div><span class="eyebrow">FICHA DO TREINADOR</span><h1 class="page-title">{{ nome_exibido }}</h1><p class="page-subtitle">{{ captura.especie.nome }} · Nº {{ captura.especie.pokeapi_id|stringformat:'03d' }}</p></div>
+  <div class="pokemon-detail__level-stack">
+    <span class="count-chip">NÍVEL {{ captura.nivel }}</span>
+    <div class="pokemon-detail__overall-iv iv-rarity--{{ raridade_iv_geral }}">
+      <span>IV GERAL</span>
+      <strong>{{ media_ivs }} / 31</strong>
+      <span>{{ raridade_iv_geral_label }}</span>
+    </div>
+  </div>
+</section>
+<div class="pokemon-detail__layout">
+  <section class="pixel-panel pokemon-detail__identity" aria-label="Informações do Pokémon">
+    <div class="pokemon-detail__sprite">
+      {% if captura.especie.sprite_url %}<img src="{{ captura.especie.sprite_url }}" alt="{{ captura.especie.nome }}" fetchpriority="high">{% else %}<span aria-hidden="true">◉</span>{% endif %}
+    </div>
+    <div class="pokemon-detail__identity-body">
+      <span class="eyebrow">ESPÉCIE</span>
+      <h2>{{ captura.especie.nome }}</h2>
+      <div class="pokemon-detail__tags">
+        <span class="rarity rarity--{{ captura.especie.raridade|slugify }}">{{ captura.especie.get_raridade_display }}</span>
+        <span class="pokemon-detail__type">{{ captura.especie.tipo_primario|title }}</span>
+        {% if captura.especie.tipo_secundario %}<span class="pokemon-detail__type">{{ captura.especie.tipo_secundario|title }}</span>{% endif %}
+      </div>
+      <dl class="pokemon-detail__facts">
+        <div><dt>Nível</dt><dd>{{ captura.nivel }}</dd></div>
+        <div><dt>Capturado em</dt><dd>{{ captura.data_captura|date:'d/m/Y' }}</dd></div>
+        <div><dt>Apelido</dt><dd>{{ captura.apelido|default:'Sem apelido' }}</dd></div>
+      </dl>
+    </div>
+  </section>
+  <section class="pixel-panel pokemon-detail__stats" aria-labelledby="stats-title">
+    <div class="pokemon-detail__stats-heading"><div><span class="eyebrow">DESEMPENHO</span><h2 id="stats-title">Atributos</h2></div><span class="pokemon-detail__level">NV. {{ captura.nivel }}</span></div>
+    <p class="pokemon-detail__legend"><span>BASE</span><span>IV</span><span>ATUAL</span></p>
+    <div class="pokemon-detail__stat-list">
+      {% for atributo in atributos %}
+      <article class="pokemon-stat">
+        <div class="pokemon-stat__heading"><h3>{{ atributo.nome }}</h3><strong>{{ atributo.valor }}</strong></div>
+        <div class="pokemon-stat__bar" role="img" aria-label="{{ atributo.nome }}: {{ atributo.percentual }}% do máximo teórico neste nível"><span style="--stat-progress: {{ atributo.percentual }}%"></span></div>
+        <div class="pokemon-stat__values"><span>{{ atributo.base }}</span><span class="pokemon-stat__iv"><strong>+{{ atributo.iv }}</strong><span class="iv-rarity iv-rarity--{{ atributo.raridade_iv }}">{{ atributo.raridade_iv_label }}</span></span><span>{{ atributo.valor }}</span></div>
+      </article>
+      {% endfor %}
+    </div>
+    <p class="pokemon-detail__note">Atributos atuais calculados pelo nível e pelos IVs individuais deste Pokémon.</p>
+  </section>
+</div>
+{% endblock %}
