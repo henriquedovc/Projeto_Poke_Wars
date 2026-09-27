@@ -8,7 +8,7 @@ venv/
 __pycache__/
 *.pyc
 
-# Banco SQLite (caso apareça por engano; vamos usar PostgreSQL)
+# Banco SQLite (caso apareça por engano; não é usado no projeto)
 db.sqlite3
 
 # Arquivos do editor
