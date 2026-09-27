@@ -43,13 +43,14 @@ class PokemonCapturado(models.Model):
     nivel = models.IntegerField(default=1)
     data_captura = models.DateTimeField(auto_now_add=True)
 
-    # IVs individuais — o "gacha" de cada status (0 a 31)
     iv_hp = models.IntegerField(default=0)
     iv_ataque = models.IntegerField(default=0)
     iv_defesa = models.IntegerField(default=0)
     iv_ataque_especial = models.IntegerField(default=0)
     iv_defesa_especial = models.IntegerField(default=0)
     iv_velocidade = models.IntegerField(default=0)
+
+    evolucoes = models.PositiveSmallIntegerField(default=0)  # quantas vezes esse pokemon já evoluiu
 
     def __str__(self):
         nome_exibido = self.apelido if self.apelido else self.especie.nome
