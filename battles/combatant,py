@@ -1,0 +1,89 @@
+from dataclasses import dataclass, field
+from pokedex.services import obter_golpes_por_nivel
+from .stats import calculate_hp, calculate_stat
+
+IV_PADRAO_SELVAGEM = 15
+
+
+@dataclass
+class BattleMove:
+    name: str
+    type: str
+    category: str          # 'fisico', 'especial' ou 'status'
+    power: int | None
+    accuracy: int | None   # None = golpe que nunca erra
+    priority: int = 0
+
+
+@dataclass
+class Combatant:
+    name: str
+    level: int
+    types: list
+    max_hp: int
+    current_hp: int
+    attack: int
+    defense: int
+    sp_attack: int
+    sp_defense: int
+    speed: int
+    moves: list = field(default_factory=list)
+
+    @property
+    def is_fainted(self):
+        return self.current_hp <= 0
+
+
+def _to_battle_move(move):
+    """Converte um Move do banco para o formato leve usado na batalha."""
+    return BattleMove(
+        name=move.nome,
+        type=move.tipo,
+        category=move.categoria,
+        power=move.poder,
+        accuracy=move.precisao,
+        priority=move.prioridade,
+    )
+
+
+def _build(especie, level, ivs, moves, name):
+    max_hp = calculate_hp(especie.hp_base, ivs['iv_hp'], level)
+    return Combatant(
+        name=name,
+        level=level,
+        types=[especie.tipo_primario, especie.tipo_secundario],
+        max_hp=max_hp,
+        current_hp=max_hp,
+        attack=calculate_stat(especie.ataque_base, ivs['iv_ataque'], level),
+        defense=calculate_stat(especie.defesa_base, ivs['iv_defesa'], level),
+        sp_attack=calculate_stat(especie.ataque_especial_base, ivs['iv_ataque_especial'], level),
+        sp_defense=calculate_stat(especie.defesa_especial_base, ivs['iv_defesa_especial'], level),
+        speed=calculate_stat(especie.velocidade_base, ivs['iv_velocidade'], level),
+        moves=[_to_battle_move(m) for m in moves],
+    )
+
+
+def combatant_from_captured(pokemon_capturado):
+    """Monta a ficha de batalha de um pokemon que o jogador já capturou."""
+    ivs = {
+        'iv_hp': pokemon_capturado.iv_hp,
+        'iv_ataque': pokemon_capturado.iv_ataque,
+        'iv_defesa': pokemon_capturado.iv_defesa,
+        'iv_ataque_especial': pokemon_capturado.iv_ataque_especial,
+        'iv_defesa_especial': pokemon_capturado.iv_defesa_especial,
+        'iv_velocidade': pokemon_capturado.iv_velocidade,
+    }
+    name = pokemon_capturado.apelido or pokemon_capturado.especie.nome
+    moves = pokemon_capturado.movimentos_atuais.all()
+    return _build(pokemon_capturado.especie, pokemon_capturado.nivel, ivs, moves, name)
+
+
+def combatant_from_species(especie, level, ivs=None):
+    """Monta a ficha de um pokemon selvagem (que não existe no banco)."""
+    if ivs is None:
+        ivs = {chave: IV_PADRAO_SELVAGEM for chave in (
+            'iv_hp', 'iv_ataque', 'iv_defesa',
+            'iv_ataque_especial', 'iv_defesa_especial', 'iv_velocidade',
+        )}
+    moves = obter_golpes_por_nivel(especie, level)
+    return _build(especie, level, ivs, moves, especie.nome)

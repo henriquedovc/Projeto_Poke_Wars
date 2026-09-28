@@ -4,34 +4,34 @@ from .gacha import sortear_ivs
 MAXIMO_GOLPES = 4
 
 
-def equipar_golpes_iniciais(pokemon_capturado):
+def obter_golpes_por_nivel(especie, nivel):
     """
-    Equipa até 4 golpes no pokemon, seguindo a regra dos jogos oficiais:
-    os golpes mais recentes que a espécie já aprenderia até o nível atual.
+    Devolve até 4 golpes (objetos Move) que uma espécie teria naquele nível,
+    seguindo a regra dos jogos oficiais: os mais recentes do learnset.
     """
-    aprendidos = (
+    aprendidos = list(
         EspecieMovimento.objects
-        .filter(
-            especie=pokemon_capturado.especie,
-            nivel_aprendizado__lte=pokemon_capturado.nivel,
-        )
+        .filter(especie=especie, nivel_aprendizado__lte=nivel)
         .select_related('movimento')
         .order_by('-nivel_aprendizado')[:MAXIMO_GOLPES]
     )
 
-    # Fallback: se a espécie não aprende nada até esse nível (acontece com
-    # alguns pokemons), pega os golpes de menor nível disponíveis
+    # Fallback: se a espécie não aprende nada até esse nível
     if not aprendidos:
-        aprendidos = (
+        aprendidos = list(
             EspecieMovimento.objects
-            .filter(especie=pokemon_capturado.especie)
+            .filter(especie=especie)
             .select_related('movimento')
             .order_by('nivel_aprendizado')[:MAXIMO_GOLPES]
         )
 
-    pokemon_capturado.movimentos_atuais.set(
-        [registro.movimento for registro in aprendidos]
-    )
+    return [registro.movimento for registro in aprendidos]
+
+
+def equipar_golpes_iniciais(pokemon_capturado):
+    """Equipa no pokemon capturado os golpes que ele teria no nível atual."""
+    golpes = obter_golpes_por_nivel(pokemon_capturado.especie, pokemon_capturado.nivel)
+    pokemon_capturado.movimentos_atuais.set(golpes)
 
 
 def capturar_pokemon(perfil_jogador, especie_id, apelido=None):
